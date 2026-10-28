@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Can historical search signals prioritize pages for content review? A sealed temporal evaluation of a transparent rule and logistic regression.">
+  <title>Can Search Signals Prioritize Pages for Content Review?</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">FlyRank ML Internship · Capstone</p>
+      <h1>Forecasting Search-Visibility Decline for Content Review Prioritization</h1>
+      <p class="lead">A time-ordered comparison shows a real trade-off: the model ranks better overall, while the transparent rule wins at the top of the queue.</p>
+      <div class="status" id="status">Verified sealed June 2026 evaluation · 93,048 observations</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="abstract">
+      <h2>Abstract</h2>
+      <p>This study asks whether historical page-level search signals can prioritize pages for content review. It uses the gated FlyRank warehouse release at the client-page-month grain, with March 2026 as the development validation period and June 2026 reserved as the sealed final outcome period. A transparent demand-and-deterioration rule is compared with regularized logistic regression on identical evaluation rows. On 93,048 sealed observations, logistic regression improved ROC AUC from 0.554 to 0.654 and average precision from 0.703 to 0.766, while the baseline remained better at Precision@20 (0.950 versus 0.900) and Precision@50 (0.980 versus 0.920). The resulting queue supports human content review with reason codes and action labels; it predicts observed next-month visibility decline, not the causal effect of refreshing content.</p>
+    </section>
+
+    <section id="introduction">
+      <h2>Introduction and decision problem</h2>
+      <p>An SEO team with limited review capacity must decide which existing pages to inspect first. This study asks whether pre-outcome search signals can rank pages that later experience a material visibility decline more effectively than a transparent rule.</p>
+      <p>One observation is a pseudonymized client-page snapshot. A false positive wastes editorial time; a false negative leaves an observed decline unreviewed. The output is a ranked decision-support queue, not an automated editing system.</p>
+    </section>
+
+    <section id="data">
+      <h2>Data source, release, windows, and exclusions</h2>
+      <p>The analysis uses <code>fact_content_daily_performance</code> from <code>flyrank_pseudonymized_warehouse_release_v20260703</code>, accessed through DuckDB and aggregated remotely to client-page-month snapshots. Eligible observations have at least 20 GSC-available days in both months and at least 100 feature-month impressions.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Role</th><th>Feature month</th><th>Outcome month</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td>Initial training</td><td>January 2026</td><td>February 2026</td><td>Model fitting</td></tr>
+          <tr><td>Initial training</td><td>February 2026</td><td>March 2026</td><td>Model fitting</td></tr>
+          <tr><td>Development validation</td><td>March 2026</td><td>April 2026</td><td>Method validation</td></tr>
+          <tr><td>Final refit addition</td><td>April 2026</td><td>May 2026</td><td>Refit after method lock</td></tr>
+          <tr><td>Sealed final test</td><td>May 2026</td><td>June 2026</td><td>One final evaluation</td></tr>
+        </tbody>
+      </table></div>
+      <p>June was not used for feature, threshold, or model selection. IDs were used only for joins and overlap audits. Client names, domains, URLs, titles, raw queries, product decisions, credentials, row-level exports, and future-window measures are excluded from this public paper.</p>
+      <details><summary>Warehouse grain audit</summary><p>March contained 9,841,378 valid page-days with no repeated keys. June contained 11,694,072 physical rows, including 6,390 exact repeated GSC observations; de-duplication left 11,687,682 canonical page-days. Neither partition contained invalid keys or conflicting same-key GSC observations.</p></details>
+    </section>
+
+    <section id="methodology">
+      <h2>Methodology</h2>
+      <h3>Observed target—not refresh impact</h3>
+      <p>A positive target means next-month impressions were no more than 80% of feature-month impressions: an observed decline of at least 20%. It does not indicate whether a page was refreshed or estimate the causal effect of refreshing it.</p>
+      <h3>Features, baseline, and model</h3>
+      <p>The eight pre-outcome features are log impressions, CTR, impression-weighted average position, active days, click days, position-observed days, impression momentum, and click momentum. CTR is total clicks divided by total impressions; average position is total position sum divided by total impressions.</p>
+      <p>The transparent baseline combines demand, recent deterioration, positions 4–20, and low CTR. The ML pipeline uses median imputation, standardization, and class-balanced regularized logistic regression with seed 42.</p>
+      <h3>Validation and leakage controls</h3>
+      <p>Development used March features and April outcomes. After method lock, the model was refit using outcomes through May and evaluated once on May features and the sealed June outcome. Both methods used identical rows. Assertions enforced temporal order, excluded future and target-derived fields, and stopped on conflicting page-day observations.</p>
+      <p>The final split included 47 training clients, 44 test clients, and 41 overlapping clients. This tests later periods for largely recurring clients; it is not evidence of generalization to unseen clients.</p>
+    </section>
+
+    <section id="results">
+      <h2>Results: better overall ranking, weaker top-K precision</h2>
+      <p class="result-lead">The sealed set contained <strong>93,048 observations</strong> and 59,620 positives—a <strong>64.1% base rate</strong>.</p>
+      <div class="metric-grid">
+        <article><span>ROC AUC</span><strong>0.554 → 0.654</strong><small>Model +0.100</small></article>
+        <article><span>Average precision</span><strong>0.703 → 0.766</strong><small>Model +0.063</small></article>
+        <article><span>Precision@20</span><strong>0.950 → 0.900</strong><small>Model −0.050</small></article>
+        <article><span>Precision@50</span><strong>0.980 → 0.920</strong><small>Model −0.060</small></article>
+      </div>
+
+      <h3>Development validation</h3>
+      <p>March-to-April development included 88,941 observations, 45,624 positives, and a 51.3% base rate.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Method</th><th>P@20</th><th>P@50</th><th>Average precision</th><th>ROC AUC</th></tr></thead>
+        <tbody><tr><td>Transparent baseline</td><td>0.900</td><td>0.940</td><td>0.578</td><td>0.548</td></tr><tr><td>Logistic regression</td><td>0.700</td><td>0.640</td><td><strong>0.591</strong></td><td><strong>0.615</strong></td></tr></tbody>
+      </table></div>
+
+      <h3>Sealed final test</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Method</th><th>Base rate</th><th>P@20</th><th>P@50</th><th>Average precision</th><th>ROC AUC</th></tr></thead>
+        <tbody><tr><td>Transparent baseline</td><td>0.641</td><td><strong>0.950</strong></td><td><strong>0.980</strong></td><td>0.703</td><td>0.554</td></tr><tr><td>Logistic regression</td><td>0.641</td><td>0.900</td><td>0.920</td><td><strong>0.766</strong></td><td><strong>0.654</strong></td></tr></tbody>
+      </table></div>
+
+      <figure>
+        <img src="../work/figures/sealed_precision.png" alt="Grouped bars show baseline Precision at 20 of 0.95 and Precision at 50 of 0.98, versus logistic regression values of 0.90 and 0.92.">
+        <figcaption>Figure 1. The transparent baseline produced the more precise sealed top-20 and top-50 shortlists.</figcaption>
+      </figure>
+      <div id="discrimination-chart" class="chart" aria-label="ROC AUC and average precision comparison"></div>
+      <p class="takeaway"><strong>Decision:</strong> use the transparent baseline when only 20–50 pages can be reviewed. The model contains useful broader ranking signal, but its higher ROC AUC and average precision do not justify replacing the baseline at the tested shortlist sizes.</p>
+      <p id="receipt-check" class="receipt">Aggregate metric receipt: verified warehouse run.</p>
+    </section>
+
+    <section id="limitations">
+      <h2>Limitations and honest interpretation</h2>
+      <p>The system forecasts measured search visibility. It does not estimate Google's ranking algorithm, diagnose why impressions changed, or prove that refreshing a page causes recovery. Demand, seasonality, indexing, SERP features, query mix, site changes, and coverage can affect the outcome.</p>
+      <p>The panel is unbalanced, the 20% threshold and eligibility rules are decision conventions, and the final positive rate is high. Precision@20 and Precision@50 describe small shortlists and can vary across periods. Substantial client overlap means the result represents temporal performance for mostly recurring clients, not unseen-client performance.</p>
+      <p>A causal refresh-effect claim would require documented interventions plus an experimental or credible quasi-experimental design.</p>
+    </section>
+
+    <section id="recommendations">
+      <h2>Ranked content-action recommendations</h2>
+      <p>The private queue ranks all eligible observations. These public aggregates describe the scored population—not a recommendation to update every page.</p>
+      <div class="cards">
+        <article><span class="count">45,566</span><h3>Reachable search position</h3><p>Check coverage and intent fit. Position alone is not a refresh diagnosis.</p></article>
+        <article><span class="count">28,560</span><h3>Low CTR with demand</h3><p>Review snippet and intent alignment before changing body content.</p></article>
+        <article><span class="count">18,775</span><h3>Recent visibility decay</h3><p>Check freshness, demand shifts, relevance, and technical causes.</p></article>
+        <article><span class="count">147</span><h3>Multivariate decline risk</h3><p>Inspect the combined evidence before selecting an action.</p></article>
+      </div>
+      <p>Reviewers should start at the ranked head of the queue and retain the score, reason code, action label, and limitation. Never automate publishing, deletion, rewriting, or client communication from this output.</p>
+    </section>
+
+    <section id="reproducibility">
+      <h2>Reproducibility</h2>
+      <p>Review the <a href="../work/notebooks/capstone.ipynb">executed capstone notebook</a>, <a href="../work/capstone_pipeline.py">pipeline module</a>, <a href="../work/test_capstone_pipeline.py">unit tests</a>, <a href="../work/outputs/capstone_metrics.json">aggregate metric receipt</a>, and <a href="../work/outputs/partition_audit.json">grain audit</a>. Install <code>requirements.txt</code>, provide authorized access through <code>HF_TOKEN</code>, set <code>RUN_WAREHOUSE=1</code>, and execute the notebook top to bottom. Seed: 42.</p>
+      <p>The row-level recommendation CSV is private and gitignored. Public JSON and figures contain aggregate results only.</p>
+    </section>
+
+    <section id="acknowledgments">
+      <h2>Acknowledgments and data credit</h2>
+      <p><a href="https://flyrank.ai">Built on the FlyRank ML Internship dataset</a>.</p>
+    </section>
+  </main>
+
+  <footer><div class="wrap">Public-safe decision support · Observed outcomes, not causal refresh effects</div></footer>
+  <script src="paper.js"></script>
+</body>
+</html>

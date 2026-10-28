@@ -1,0 +1,81 @@
+:root {
+  --ink: #17202a;
+  --muted: #5c6773;
+  --paper: #fbfaf6;
+  --card: #ffffff;
+  --accent: #1f6f5f;
+  --accent-soft: #d8eee7;
+  --baseline: #66a18f;
+  --line: #dfe5df;
+  --warm: #f5ead4;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.wrap { width: min(980px, calc(100% - 2rem)); margin: auto; }
+.hero {
+  padding: 5rem 0 3.5rem;
+  background: linear-gradient(135deg, #103b35, #1f6f5f);
+  color: #fff;
+}
+.eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; font-weight: 750; }
+.hero h1 { max-width: 830px; font: 700 clamp(2.25rem, 6vw, 4.6rem)/1.05 Georgia, serif; margin: .6rem 0 1rem; }
+.lead { max-width: 760px; font-size: 1.2rem; opacity: .92; }
+.status { display: inline-block; margin-top: 1rem; padding: .65rem .9rem; border-radius: .45rem; background: #d8f3e9; color: #103b35; font-weight: 700; }
+main { padding: 2rem 0 5rem; }
+section { padding: 2.3rem 0; border-bottom: 1px solid var(--line); }
+h2 { font: 700 clamp(1.6rem, 3vw, 2.2rem)/1.2 Georgia, serif; }
+h3 { margin: 1.6rem 0 .45rem; }
+p { max-width: 82ch; }
+a { color: var(--accent); text-underline-offset: .15em; }
+code { background: #eef2ed; padding: .12em .3em; border-radius: .25rem; overflow-wrap: anywhere; }
+.table-scroll { overflow-x: auto; margin: 1rem 0; }
+table { width: 100%; border-collapse: collapse; background: var(--card); font-variant-numeric: tabular-nums; }
+th, td { padding: .75rem .8rem; border: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+thead { background: #edf4f0; }
+details { padding: .8rem 1rem; background: var(--card); border: 1px solid var(--line); border-radius: .55rem; }
+summary { cursor: pointer; font-weight: 700; }
+.result-lead { font-size: 1.08rem; }
+.metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; margin: 1.3rem 0 2rem; }
+.metric-grid article { padding: 1rem; background: var(--card); border: 1px solid var(--line); border-radius: .65rem; }
+.metric-grid span, .metric-grid small { display: block; color: var(--muted); }
+.metric-grid strong { display: block; margin: .3rem 0; font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+figure { margin: 2rem 0; }
+figure img { display: block; width: 100%; height: auto; border: 1px solid var(--line); background: #fff; }
+figcaption { margin-top: .6rem; color: var(--muted); font-size: .94rem; }
+.chart { margin: 2rem 0; padding: 1rem 1.2rem; background: var(--card); border: 1px solid var(--line); border-radius: .65rem; }
+.chart h3 { margin-top: 0; }
+.chart-group { margin: 1rem 0 1.4rem; }
+.bar-row { display: grid; grid-template-columns: 90px 1fr 58px; gap: .7rem; align-items: center; margin-top: .45rem; font-variant-numeric: tabular-nums; }
+.track { height: 18px; background: #e7ece8; border-radius: 1rem; overflow: hidden; }
+.fill { height: 100%; }
+.fill.baseline { background: var(--baseline); }
+.fill.model { background: var(--accent); }
+.takeaway { padding: 1rem 1.1rem; background: var(--warm); border-left: 4px solid #b6853b; }
+.receipt { color: var(--muted); font-size: .9rem; }
+.receipt.verified { color: var(--accent); font-weight: 700; }
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1rem 0; }
+.cards article { background: var(--card); border: 1px solid var(--line); padding: 1.2rem; border-radius: .7rem; }
+.cards h3 { margin-top: .25rem; }
+.count { color: var(--accent); font-weight: 800; font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+footer { padding: 2rem 0; background: #17202a; color: #dfe5df; }
+
+@media (max-width: 760px) {
+  .hero { padding: 3.2rem 0 2.5rem; }
+  .metric-grid, .cards { grid-template-columns: 1fr; }
+  .bar-row { grid-template-columns: 72px 1fr 52px; font-size: .9rem; }
+  th, td { padding: .6rem; }
+}
+
+@media print {
+  .hero { padding: 2rem 0; background: none; color: var(--ink); }
+  body { background: #fff; font-size: 11pt; }
+  section { break-inside: avoid; }
+}

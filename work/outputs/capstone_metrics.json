@@ -1,0 +1,72 @@
+{
+  "development": {
+    "baseline": {
+      "average_precision": 0.5781664907751867,
+      "base_rate": 0.5129692717644281,
+      "n": 88941,
+      "positives": 45624,
+      "precision_at_20": 0.9,
+      "precision_at_50": 0.94,
+      "roc_auc": 0.5479937530656105
+    },
+    "client_overlap_count": 25,
+    "feature_columns": [
+      "log_impressions",
+      "ctr",
+      "avg_position",
+      "active_days",
+      "click_days",
+      "position_days",
+      "impression_momentum",
+      "click_momentum"
+    ],
+    "model": {
+      "average_precision": 0.5914004298277559,
+      "base_rate": 0.5129692717644281,
+      "n": 88941,
+      "positives": 45624,
+      "precision_at_20": 0.7,
+      "precision_at_50": 0.64,
+      "roc_auc": 0.6153598254051579
+    },
+    "test_clients": 37,
+    "train_clients": 27
+  },
+  "random_seed": 42,
+  "release": "flyrank_pseudonymized_warehouse_release_v20260703",
+  "sealed_final": {
+    "baseline": {
+      "average_precision": 0.7028635371374776,
+      "base_rate": 0.6407445619465222,
+      "n": 93048,
+      "positives": 59620,
+      "precision_at_20": 0.95,
+      "precision_at_50": 0.98,
+      "roc_auc": 0.5539795346696763
+    },
+    "client_overlap_count": 41,
+    "feature_columns": [
+      "log_impressions",
+      "ctr",
+      "avg_position",
+      "active_days",
+      "click_days",
+      "position_days",
+      "impression_momentum",
+      "click_momentum"
+    ],
+    "model": {
+      "average_precision": 0.7658273276523343,
+      "base_rate": 0.6407445619465222,
+      "n": 93048,
+      "positives": 59620,
+      "precision_at_20": 0.9,
+      "precision_at_50": 0.92,
+      "roc_auc": 0.6537340524530595
+    },
+    "test_clients": 44,
+    "train_clients": 47
+  },
+  "status": "verified_warehouse_run",
+  "target": "next-month impressions <= 80% of feature-month impressions"
+}

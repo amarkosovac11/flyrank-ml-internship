@@ -1,0 +1,32 @@
+[
+  {
+    "conflicting_gsc_groups": 0,
+    "exact_gsc_duplicate_groups": 0,
+    "invalid_key_rows": 0,
+    "max_date": "2026-03-31 00:00:00",
+    "max_key_multiplicity": 1,
+    "min_date": "2026-03-01 00:00:00",
+    "month": "2026-03",
+    "null_client_rows": 0,
+    "null_content_rows": 0,
+    "null_date_rows": 0,
+    "repeated_valid_key_rows": 0,
+    "rows": 9841378,
+    "valid_page_days": 9841378
+  },
+  {
+    "conflicting_gsc_groups": 0,
+    "exact_gsc_duplicate_groups": 6390,
+    "invalid_key_rows": 0,
+    "max_date": "2026-06-30 00:00:00",
+    "max_key_multiplicity": 2,
+    "min_date": "2026-06-01 00:00:00",
+    "month": "2026-06",
+    "null_client_rows": 0,
+    "null_content_rows": 0,
+    "null_date_rows": 0,
+    "repeated_valid_key_rows": 6390,
+    "rows": 11694072,
+    "valid_page_days": 11687682
+  }
+]

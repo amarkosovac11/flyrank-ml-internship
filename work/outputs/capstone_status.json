@@ -1,0 +1,25 @@
+{
+  "status": "verified_warehouse_run",
+  "release": "flyrank_pseudonymized_warehouse_release_v20260703",
+  "target": "next-month impressions <= 80% of feature-month impressions",
+  "sealed_test": {
+    "feature_month": "2026-05",
+    "outcome_month": "2026-06",
+    "observations": 93048,
+    "positives": 59620,
+    "base_rate": 0.6407445619465222
+  },
+  "audit": {
+    "source": "work/outputs/partition_audit.json",
+    "march_conflicting_gsc_groups": 0,
+    "june_conflicting_gsc_groups": 0,
+    "june_exact_gsc_duplicate_groups": 6390,
+    "june_canonical_page_days": 11687682
+  },
+  "verified_claims": [
+    "The sealed June 2026 evaluation completed on 93,048 eligible observations.",
+    "Logistic regression exceeded the baseline on ROC AUC and average precision.",
+    "The transparent baseline exceeded logistic regression at Precision@20 and Precision@50.",
+    "The target is observed next-month impression decline, not causal refresh impact."
+  ]
+}
