@@ -59,7 +59,22 @@ jobs:
           # an unrun copy. While you are mid-track this only warns; once submission/
           # paper_url.txt holds a real URL (final state), it fails the build - a finished
           # track must not ship unexecuted deliverables. Fresh skeletons stay silent.
-          import json, glob, sys
+          import ast, json, glob, sys
+
+          def has_executable_source(cell):
+              """False only for empty/comment-only starter code cells.
+
+              IPython magics, shell escapes, and malformed Python must still count as
+              filled code, so a SyntaxError is treated as executable content.
+              """
+              source = "".join(cell.get("source", []))
+              if not source.strip():
+                  return False
+              try:
+                  return bool(ast.parse(source).body)
+              except SyntaxError:
+                  return True
+
           url = ""
           try:
               url = open("submission/paper_url.txt").readline().strip()
@@ -73,9 +88,10 @@ jobs:
               except Exception:
                   continue
               code = [c for c in nb.get("cells", []) if c.get("cell_type") == "code"]
-              src = sum(len("".join(c.get("source", []))) for c in code)
-              has_out = any(c.get("outputs") for c in code)
-              if code and src > 200 and not has_out:
+              filled = [c for c in code if has_executable_source(c)]
+              src = sum(len("".join(c.get("source", []))) for c in filled)
+              has_out = any(c.get("outputs") for c in filled)
+              if filled and src > 200 and not has_out:
                   kind = "error" if final else "warning"
                   print(f"::{kind} file={p}::{p} has filled code cells but no outputs - "
                         "did Colab save an unrun copy? Runtime -> Run all, then save again.")
